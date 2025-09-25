@@ -1,0 +1,34 @@
+apiVersion: security.kubearmor.com/v1
+kind: KubeArmorPolicy
+metadata:
+  name: wisecow-zero-trust
+  namespace: default
+spec:
+  severity: 5
+  selector:
+    matchLabels:
+      app: wisecow
+  process:
+    matchDirectories:
+    - dir: /usr/bin/
+      recursive: true
+    - dir: /bin/
+      recursive: true
+    - dir: /lib/
+      recursive: true
+    - dir: /lib64/
+      recursive: true
+    action: Block
+  file:
+    matchDirectories:
+    - dir: /etc/
+      recursive: true
+    action: Block
+  network:
+    matchProtocols:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+    action: Allow
+  message: "Zero-Trust policy: Only allow Wisecow app to use HTTP/HTTPS"
